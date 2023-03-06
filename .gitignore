@@ -1,0 +1,7 @@
+# Ignore CMake stuff
+CMakeSettings.json
+out/
+build/
+
+# Ignore Visual Studio stuff
+.vs/

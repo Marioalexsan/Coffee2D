@@ -1,0 +1,26 @@
+---
+# Project
+Standard: c++20
+ColumnLimit: 80
+BasedOnStyle: Microsoft 
+
+# Indent
+AccessModifierOffset: -4
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+IndentWidth: 4
+IndentWrappedFunctionNames: true
+TabWidth: 4
+
+# Break
+BreakConstructorInitializers: BeforeComma
+
+# Alignment
+AlignConsecutiveAssignments: Consecutive
+PointerAlignment: Left
+
+# Namespaces
+FixNamespaceComments: true
+
+# Spaces
+SpaceAroundPointerQualifiers: Default
