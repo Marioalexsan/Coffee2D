@@ -3,12 +3,12 @@
 
 namespace silver
 {
-class SilverGame : public coffee::Game
-{
-    void initialize() override;
+    class SilverGame : public coffee::Game
+    {
+        void initialize() override;
 
-    void update(sf::Time deltaTime) override;
+        void update(sf::Time deltaTime) override;
 
-    void cleanup() override;
-};
+        void cleanup() override;
+    };
 } // namespace silver

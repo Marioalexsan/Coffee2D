@@ -19,10 +19,9 @@ set(INCROOT "include/Coffee2D")
 set(COFFEE2D_INCLUDE
 	# Graphics
 	"${INCROOT}/Graphics/Renderer.hpp"
-	"${INCROOT}/Graphics/Sprite.hpp"
 	"${INCROOT}/Graphics/Texture.hpp"
 	"${INCROOT}/Graphics/Vertex.hpp"
-	"${INCROOT}/Graphics/VertexBuffer.hpp"
+	"${INCROOT}/Graphics/Model2D.hpp"
 
 	# Game
 	"${INCROOT}/Game/Game.hpp"
@@ -41,18 +40,17 @@ set(SRCROOT "src/Coffee2D")
 set(COFFEE2D_SRC
 	# Graphics
 	"${SRCROOT}/Graphics/Renderer.cpp"
-	"${SRCROOT}/Graphics/Sprite.cpp"
 	"${SRCROOT}/Graphics/Texture.cpp"
 	"${SRCROOT}/Graphics/Vertex.cpp"
-	"${SRCROOT}/Graphics/VertexBuffer.cpp"
+	"${SRCROOT}/Graphics/Model2D.cpp"
 
 	# Graphics - OpenGL Implementation
 	"${SRCROOT}/Graphics/OpenGL/RendererOpenGL.cpp"
 	"${SRCROOT}/Graphics/OpenGL/RendererOpenGL.hpp"
 	"${SRCROOT}/Graphics/OpenGL/TextureOpenGL.cpp"
 	"${SRCROOT}/Graphics/OpenGL/TextureOpenGL.hpp"
-	"${SRCROOT}/Graphics/OpenGL/VertexBufferOpenGL.cpp"
-	"${SRCROOT}/Graphics/OpenGL/VertexBufferOpenGL.hpp"
+	"${SRCROOT}/Graphics/OpenGL/Model2DOpenGL.cpp"
+	"${SRCROOT}/Graphics/OpenGL/Model2DOpenGL.hpp"
 	
 	# Game
 	"${SRCROOT}/Game/Game.cpp"

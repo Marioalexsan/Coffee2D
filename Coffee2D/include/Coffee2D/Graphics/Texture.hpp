@@ -1,5 +1,6 @@
 #pragma once
 #include <Coffee2D/Export.hpp>
+#include <SFML/System.hpp>
 #include <filesystem>
 #include <span>
 
@@ -16,9 +17,12 @@ public:
 
     virtual ~Texture();
 
-    virtual void load(const std::span<char>& data, uint64_t width, uint64_t height, PixelFormat format) = 0;
+    [[nodiscard]] virtual bool load(const std::span<char>& data, uint64_t width,
+                                    uint64_t height, PixelFormat format) = 0;
 
     virtual void unload() = 0;
+
+    virtual sf::Vector2u getSize() = 0;
 
     void loadFromFile(const std::filesystem::path& path);
 };
