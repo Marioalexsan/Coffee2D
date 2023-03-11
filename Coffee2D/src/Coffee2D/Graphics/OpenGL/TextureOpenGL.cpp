@@ -61,7 +61,16 @@ void TextureOpenGL::unload()
     }
 }
 
-sf::Vector2u TextureOpenGL::getSize()
+void TextureOpenGL::bind() const
+{
+    if (m_handle)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_handle);
+    }
+}
+
+sf::Vector2u TextureOpenGL::getSize() const
 {
     return {(unsigned int)m_width, (unsigned int)m_height};
 }

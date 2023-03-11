@@ -1,7 +1,9 @@
 #pragma once
 #include <Coffee2D/Export.hpp>
 #include <Coffee2D/Graphics/Model2D.hpp>
+
 #include <glad/glad.h>
+
 #include <span>
 
 namespace coffee
@@ -19,10 +21,12 @@ private:
     PrimitiveType m_primitiveType = PrimitiveType::Triangles;
 
 public:
-    [[nodiscard]] bool load(
-        const std::span<Vertex>& data, const std::span<uint64_t>& indices = {},
-        PrimitiveType type = PrimitiveType::Triangles) override;
+    [[nodiscard]] bool load(const std::span<Vertex>&   data,
+                            const std::span<uint64_t>& indices = {},
+                            PrimitiveType type = PrimitiveType::Triangles) override;
 
     void unload() override;
+
+    void render(const glm::mat4& modelMatrix, const Texture* texture) override;
 };
 } // namespace coffee

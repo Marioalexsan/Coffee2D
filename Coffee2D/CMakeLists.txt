@@ -22,6 +22,7 @@ set(COFFEE2D_INCLUDE
 	"${INCROOT}/Graphics/Texture.hpp"
 	"${INCROOT}/Graphics/Vertex.hpp"
 	"${INCROOT}/Graphics/Model2D.hpp"
+	"${INCROOT}/Graphics/Shader.hpp"
 
 	# Game
 	"${INCROOT}/Game/Game.hpp"
@@ -43,6 +44,7 @@ set(COFFEE2D_SRC
 	"${SRCROOT}/Graphics/Texture.cpp"
 	"${SRCROOT}/Graphics/Vertex.cpp"
 	"${SRCROOT}/Graphics/Model2D.cpp"
+	"${SRCROOT}/Graphics/Shader.cpp"
 
 	# Graphics - OpenGL Implementation
 	"${SRCROOT}/Graphics/OpenGL/RendererOpenGL.cpp"
@@ -51,6 +53,8 @@ set(COFFEE2D_SRC
 	"${SRCROOT}/Graphics/OpenGL/TextureOpenGL.hpp"
 	"${SRCROOT}/Graphics/OpenGL/Model2DOpenGL.cpp"
 	"${SRCROOT}/Graphics/OpenGL/Model2DOpenGL.hpp"
+	"${SRCROOT}/Graphics/OpenGL/ShaderOpenGL.cpp"
+	"${SRCROOT}/Graphics/OpenGL/ShaderOpenGL.hpp"
 	
 	# Game
 	"${SRCROOT}/Game/Game.cpp"

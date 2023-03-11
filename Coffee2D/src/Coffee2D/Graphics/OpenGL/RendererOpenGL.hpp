@@ -7,7 +7,7 @@ namespace coffee
 class COFFEE2D_API RendererOpenGL : public Renderer
 {
 public:
-    RendererOpenGL() = default;
+    RendererOpenGL();
     ~RendererOpenGL();
 
     void clear(sf::Color color) override;

@@ -5,6 +5,14 @@
 
 namespace coffee
 {
+RendererOpenGL::RendererOpenGL()
+{
+    gladLoadGL();
+
+    if (!GLAD_GL_VERSION_4_6)
+        throw std::runtime_error("Failed to load OpenGL 4.6");
+}
+
 RendererOpenGL::~RendererOpenGL()
 {
 }

@@ -1,8 +1,23 @@
 #include <Coffee2D/Game/Game.hpp>
+
+#include <SFML/Window.hpp>
+
 #include <atomic>
+
+#include "../Graphics/OpenGL/RendererOpenGL.hpp"
 
 namespace coffee
 {
+Game::Game()
+{
+    m_window = std::make_unique<sf::Window>(sf::VideoMode({1280, 720}),
+                                            "Hello world!",
+                                            sf::Style::Titlebar | sf::Style::Close,
+                                            sf::ContextSettings(24, 8, 0, 4, 6));
+
+    m_renderer = std::make_unique<coffee::RendererOpenGL>();
+}
+
 Game::~Game()
 {
 }
@@ -36,8 +51,7 @@ void Game::setViewMode(uint64_t width, uint64_t height, bool fullscreen)
 {
     if (m_window)
     {
-        auto contextSettings = sf::ContextSettings(
-            24, 8, 0, 4, 6, sf::ContextSettings::Attribute::Core);
+        auto contextSettings = sf::ContextSettings(24, 8, 0, 4, 6, sf::ContextSettings::Attribute::Core);
 
         uint32_t styles = sf::Style::None;
 
@@ -46,10 +60,21 @@ void Game::setViewMode(uint64_t width, uint64_t height, bool fullscreen)
         else
             styles |= sf::Style::Titlebar;
 
-        m_window->create(
-            sf::VideoMode{{(unsigned int)width, (unsigned int)height}}, "Game",
-            styles, contextSettings);
+        m_window->create(sf::VideoMode{{(unsigned int)width, (unsigned int)height}},
+                         "Game",
+                         styles,
+                         contextSettings);
     }
+}
+
+Renderer& Game::getRenderer()
+{
+    return *m_renderer;
+}
+
+sf::Window& Game::getWindow()
+{
+    return *m_window;
 }
 
 void Game::threadLoop()
@@ -57,11 +82,17 @@ void Game::threadLoop()
     initialize();
 
     sf::Clock timer;
-    sf::Time accumulator;
-    sf::Time worstSleepTime = sf::milliseconds(4);
+    sf::Time  accumulator;
+    sf::Time  worstSleepTime = sf::milliseconds(4);
 
     while (m_running)
     {
+        sf::Event event;
+        while (m_window->pollEvent(event))
+        {
+            // Nothing for now
+        }
+
         // Calculate target time to sleep
         sf::Time frameTime = sf::seconds(1) / (float)m_fps;
 
