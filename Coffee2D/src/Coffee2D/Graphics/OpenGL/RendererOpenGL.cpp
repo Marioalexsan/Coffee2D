@@ -14,6 +14,8 @@ RendererOpenGL::RendererOpenGL()
 
     if (!GLAD_GL_VERSION_4_6)
         throw std::runtime_error("Failed to load OpenGL 4.6");
+
+    glDisable(GL_CULL_FACE);
 }
 
 RendererOpenGL::~RendererOpenGL()

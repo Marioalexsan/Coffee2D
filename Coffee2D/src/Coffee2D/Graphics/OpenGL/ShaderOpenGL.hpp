@@ -25,7 +25,7 @@ public:
     std::string getShaderLog(ShaderType type) const override;
     std::string getProgramLog() const override;
 
-    void useMvpMatrix(const glm::mat4& matrix) const override;
+    void useMvpMatrix(const sf::Transform& transform) const override;
     void useTextureSlot(int textureSlot) const override;
 
     void bind() const override;

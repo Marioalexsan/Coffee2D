@@ -19,7 +19,7 @@ TextureOpenGL::~TextureOpenGL()
     unload();
 }
 
-bool TextureOpenGL::load(const std::span<char>& data, uint64_t width,
+bool TextureOpenGL::load(const std::span<uint8_t>& data, uint64_t width,
                          uint64_t height, PixelFormat format)
 {
     if (!formatMap.contains(format))

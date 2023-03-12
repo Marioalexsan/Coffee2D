@@ -2,6 +2,7 @@
 #include <Coffee2D/Export.hpp>
 #include <Coffee2D/Graphics/Model2D.hpp>
 #include <Coffee2D/Graphics/Renderer.hpp>
+#include <Coffee2D/Graphics/SpriteBatch.hpp>
 
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -20,9 +21,9 @@ private:
     bool       m_running = false;
     int        m_fps     = 60;
 
-    std::unique_ptr<sf::Window>       m_window;
-    std::unique_ptr<coffee::Renderer> m_renderer;
-    std::unique_ptr<coffee::Model2D>  m_model;
+    std::unique_ptr<sf::Window>  m_window;
+    std::unique_ptr<Renderer>    m_renderer;
+    std::unique_ptr<SpriteBatch> m_spriteBatch;
 
 public:
     Game();
@@ -43,8 +44,9 @@ public:
 
     void setViewMode(uint64_t width, uint64_t height, bool fullscreen);
 
-    Renderer&   getRenderer();
-    sf::Window& getWindow();
+    Renderer&    getRenderer();
+    sf::Window&  getWindow();
+    SpriteBatch& getSpriteBatch();
 
 private:
     void threadLoop();

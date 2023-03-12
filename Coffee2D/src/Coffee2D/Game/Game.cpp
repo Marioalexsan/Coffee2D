@@ -15,7 +15,8 @@ Game::Game()
                                             sf::Style::Titlebar | sf::Style::Close,
                                             sf::ContextSettings(24, 8, 0, 4, 6));
 
-    m_renderer = std::make_unique<coffee::RendererOpenGL>();
+    m_renderer = std::make_unique<RendererOpenGL>();
+    m_spriteBatch = std::make_unique<SpriteBatch>(*m_renderer);
 }
 
 Game::~Game()
@@ -121,6 +122,11 @@ void Game::threadLoop()
     }
 
     cleanup();
+}
+
+SpriteBatch& Game::getSpriteBatch()
+{
+    return *m_spriteBatch;
 }
 
 } // namespace coffee

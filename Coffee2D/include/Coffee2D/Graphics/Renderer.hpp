@@ -7,8 +7,6 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/View.hpp>
 
-#include <glm/glm.hpp>
-
 #include <memory>
 #include <span>
 

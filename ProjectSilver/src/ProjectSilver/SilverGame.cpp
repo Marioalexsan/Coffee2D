@@ -1,6 +1,5 @@
-#include <Coffee2D/Graphics/Vertex.hpp>
+#include <SFML/Graphics/Vertex.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
 #include <ProjectSilver/SilverGame.hpp>
 #include <array>
 #include <iostream>
@@ -20,16 +19,15 @@ const std::string fs_code =
 
     "void main()"
     "{"
-    //"FragColor = Color * texture(tex, TexCoord);"
-    "FragColor = Color;"
+    "FragColor = Color * texture(tex, TexCoord);"
     "}";
 
 const std::string vs_code =
     "#version 400\n"
 
     "layout(location = 0) in vec2 aPos;"
-    "layout(location = 1) in vec2 aTexCoord;"
-    "layout(location = 2) in vec4 aColor;"
+    "layout(location = 1) in vec4 aColor;"
+    "layout(location = 2) in vec2 aTexCoord;"
 
     "out vec2 Position;"
     "out vec2 TexCoord;"
@@ -51,15 +49,15 @@ namespace silver
 {
 void SilverGame::initialize()
 {
-    m_model = getRenderer().createModel2D();
+    std::array vertices = {sf::Vertex({0, 0}, sf::Color::White, {0, 0}),
+                           sf::Vertex({0, 100}, sf::Color::White, {0, 0}),
+                           sf::Vertex({100, 100}, sf::Color::White, {0, 0})};
 
-    std::array vertices = {coffee::Vertex({0, 0}, {0, 0}, sf::Color::White),
-                           coffee::Vertex({0, 100}, {0, 0}, sf::Color::White),
-                           coffee::Vertex({100, 100}, {0, 0}, sf::Color::White)};
+    m_texture = getRenderer().createTexture();
 
-    if (!m_model->load(vertices))
+    if (!m_texture->loadFromFile("WallTile.png"))
     {
-        std::clog << "Failed to load model." << std::endl;
+        std::clog << "Failed to load texture." << std::endl;
         std::abort();
     }
 
@@ -87,6 +85,8 @@ void SilverGame::initialize()
         std::clog << m_shader->getProgramLog();
         std::abort();
     }
+
+    getSpriteBatch().setView({{0, 0}, {1280, 720}});
 }
 
 void SilverGame::update(sf::Time deltaTime)
@@ -95,11 +95,23 @@ void SilverGame::update(sf::Time deltaTime)
 
     std::clog << "Ligma balls " << deltaTime.asMicroseconds() / 1000.f << std::endl;
 
-    sf::View view({0, 0}, {1280, 720});
+    getSpriteBatch().drawSprite(*m_texture,
+                                sf::Vector2f(0, 0),
+                                sf::radians(0),
+                                sf::Vector2f(1, 1),
+                                sf::Vector2f(50, 50),
+                                sf::Color::Green,
+                                m_shader.get());
 
-    glm::mat4 matrix = glm::make_mat4(view.getTransform().getMatrix());
+    getSpriteBatch().drawSprite(*m_texture,
+                                sf::Vector2f(200, 300),
+                                sf::radians(0),
+                                sf::Vector2f(1, 1),
+                                sf::Vector2f(0, 0),
+                                sf::Color::Green,
+                                m_shader.get());
 
-    m_model->render(matrix, nullptr, m_shader.get());
+    getSpriteBatch().flush();
 
     getWindow().display();
 }

@@ -1,180 +1,205 @@
 #include "Model2DOpenGL.hpp"
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-
 namespace coffee
 {
-	bool coffee::Model2DOpenGL::load(const std::span<Vertex>& data,
-		const std::span<uint64_t>& indices,
-		PrimitiveType              type)
-	{
-		// Always generate the VAO and bind it
-		// Otherwise we may mess up the previously bound VAO (if any)
-		if (!m_vaoid)
-			glGenVertexArrays(1, &m_vaoid);
+bool Model2DOpenGL::update(const std::span<sf::Vertex>& data, const std::uint64_t offset)
+{
+    if (!m_vaoid || !m_vboid)
+        return false;
 
-		auto vertices = indices.size() == 0 ? data.size() : indices.size();
+    if (data.size() + offset > m_dataSize)
+        return false;
 
-		switch (type)
-		{
-		case PrimitiveType::Triangles:
-			if (vertices % 3 != 0)
-				return false;
-			break;
-		case PrimitiveType::Lines:
-			if (vertices % 2 != 0)
-				return false;
-			break;
-		default:
-			return false;
-		}
+    glBindVertexArray(m_vaoid);
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    offset * sizeof(sf::Vertex),
+                    data.size() * sizeof(sf::Vertex),
+                    data.data());
 
-		glBindVertexArray(m_vaoid);
+    return true;
+}
 
-		if (!m_vboid)
-			glCreateBuffers(1, &m_vboid);
+bool Model2DOpenGL::create(std::uint64_t size, const std::span<uint32_t>& indices, PrimitiveType type)
+{
+    // Always generate the VAO and bind it
+    // Otherwise we may mess up the previously bound VAO (if any)
+    if (!m_vaoid)
+        glGenVertexArrays(1, &m_vaoid);
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * data.size(), data.data(), GL_STATIC_DRAW);
-        m_dataSize = vertices;
+    auto indexCount = indices.size() == 0 ? size : indices.size();
 
-		// Use element draw
-		if (indices.size() != 0)
-		{
-			if (!m_eboid)
-			{
-				glCreateBuffers(1, &m_eboid);
-			}
+    switch (type)
+    {
+        case PrimitiveType::Triangles:
+            if (indexCount % 3 != 0)
+                return false;
+            m_primitiveCount = indexCount / 3;
+            break;
+        case PrimitiveType::Lines:
+            if (indexCount % 2 != 0)
+                return false;
+            m_primitiveCount = indexCount / 2;
+            break;
+        default:
+            return false;
+    }
 
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboid);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(), GL_STATIC_DRAW);
-            m_indicesSize = indices.size();
-		}
+    glBindVertexArray(m_vaoid);
 
-		// Clear the element buffer if present
-        else if (m_eboid)
+    if (!m_vboid)
+        glCreateBuffers(1, &m_vboid);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(sf::Vertex) * size, nullptr, GL_STATIC_DRAW);
+    m_dataSize = size;
+
+    // Use element draw
+    if (indices.size() != 0)
+    {
+        if (!m_eboid)
         {
-            glDeleteBuffers(1, &m_eboid);
-            m_eboid       = 0;
-            m_indicesSize = 0;
-		}
+            glCreateBuffers(1, &m_eboid);
+        }
 
-		glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboid);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+                     indices.size() * sizeof(indices[0]),
+                     indices.data(),
+                     GL_STATIC_DRAW);
+        m_indicesSize = indices.size();
+    }
 
-		if (m_eboid)
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboid);
+    // Clear the element buffer if present
+    else if (m_eboid)
+    {
+        glDeleteBuffers(1, &m_eboid);
+        m_eboid       = 0;
+        m_indicesSize = 0;
+    }
 
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
 
-		glVertexAttribPointer(0,
-			sizeof(Vertex::position) / sizeof(Vertex::position.x),
-			GL_FLOAT,
-			GL_FALSE,
-			sizeof(Vertex),
-			(void*)0);
-		glVertexAttribPointer(1,
-			sizeof(Vertex::texCoords) / sizeof(Vertex::texCoords.x),
-			GL_FLOAT,
-			GL_FALSE,
-			sizeof(Vertex),
-			(void*)(sizeof(Vertex::position)));
-		glVertexAttribPointer(2,
-			sizeof(Vertex::color) / sizeof(Vertex::color.r),
-			GL_UNSIGNED_BYTE,
-			GL_FALSE,
-			sizeof(Vertex),
-			(void*)(sizeof(Vertex::position) + sizeof(Vertex::texCoords)));
+    if (m_eboid)
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboid);
 
-		m_primitiveType = type;
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
-		return true;
-	}
+    glVertexAttribPointer(0,
+                          sizeof(sf::Vertex::position) / sizeof(sf::Vertex::position.x),
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(sf::Vertex),
+                          (void*)(offsetof(sf::Vertex, position)));
+    glVertexAttribPointer(1,
+                          sizeof(sf::Vertex::color) / sizeof(sf::Vertex::color.r),
+                          GL_UNSIGNED_BYTE,
+                          GL_TRUE,  // Color needs to be normalized from [0, 255] to [0, 1]
+                          sizeof(sf::Vertex),
+                          (void*)(offsetof(sf::Vertex, color)));
+    glVertexAttribPointer(2,
+                          sizeof(sf::Vertex::texCoords) / sizeof(sf::Vertex::texCoords.x),
+                          GL_FLOAT,
+                          GL_FALSE,
+                          sizeof(sf::Vertex),
+                          (void*)(offsetof(sf::Vertex, texCoords)));
 
-	void Model2DOpenGL::unload()
-	{
-		if (m_vaoid)
-		{
-			glDeleteVertexArrays(1, &m_vaoid);
-			m_vaoid = 0;
-		}
+    m_primitiveType = type;
 
-		if (m_vboid)
-		{
-			glDeleteBuffers(1, &m_vboid);
-			m_vboid = 0;
-		}
+    return true;
+}
 
-		if (m_eboid)
-		{
-			glDeleteBuffers(1, &m_eboid);
-			m_eboid = 0;
-		}
-	}
+void Model2DOpenGL::unload()
+{
+    if (m_vaoid)
+    {
+        glDeleteVertexArrays(1, &m_vaoid);
+        m_vaoid = 0;
+    }
 
-	void Model2DOpenGL::render(const glm::mat4& modelMatrix, const Texture* texture, const Shader* shader)
-	{
-		(void)modelMatrix;
+    if (m_vboid)
+    {
+        glDeleteBuffers(1, &m_vboid);
+        m_vboid = 0;
+    }
 
-		if (!m_vaoid)
-			return;
+    if (m_eboid)
+    {
+        glDeleteBuffers(1, &m_eboid);
+        m_eboid = 0;
+    }
 
-		glBindVertexArray(m_vaoid);
+    m_primitiveCount = 0;
+    m_dataSize       = 0;
+    m_indicesSize    = 0;
+}
 
-		if (texture)
-			texture->bind();
+void Model2DOpenGL::render(const sf::Transform& transform,
+                           const Texture*       texture,
+                           const Shader*        shader,
+                           std::uint32_t        offset,
+                           std::uint32_t        count)
+{
+    if (!m_vaoid)
+        return;
 
-		else
-		{
-			// TODO Fix null textures
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
+    if (offset < 0 || (std::uint64_t)offset > m_primitiveCount)
+        return;
 
-		if (shader)
-		{
-			shader->bind();
+    if ((uint64_t)offset + count >= m_primitiveCount)
+        count = (uint32_t)(m_primitiveCount - offset);
 
-			shader->useMvpMatrix(modelMatrix);
-            shader->useTextureSlot(0);
-		}
+    glBindVertexArray(m_vaoid);
 
-		// Draw with elements
-		if (m_eboid)
-		{
-			if (m_primitiveType == PrimitiveType::Triangles)
-			{
-				glDrawElements(GL_TRIANGLES,
-					static_cast<GLsizei>(m_indicesSize) / 3,
-					GL_UNSIGNED_INT,
-					(void*)0);
-			}
-			else // PrimitiveType::Lines
-			{
-				glDrawElements(GL_LINES,
-					static_cast<GLsizei>(m_indicesSize) / 2,
-					GL_UNSIGNED_INT,
-					(void*)0);
-			}
-		}
+    if (texture)
+        texture->bind();
 
-		// Regular draw
-		else
-		{
-			if (m_primitiveType == PrimitiveType::Triangles)
-			{
-                glDrawArrays(GL_TRIANGLES,
-					0,
-					static_cast<GLsizei>(m_dataSize));
-			}
-			else // PrimitiveType::Lines
-			{
-                glDrawArrays(GL_LINES,
-					0,
-					static_cast<GLsizei>(m_dataSize));
-			}
-		}
-	}
+    else
+    {
+        // TODO Fix null textures
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
+    }
+
+    if (shader)
+    {
+        shader->bind();
+
+        shader->useMvpMatrix(transform);
+        shader->useTextureSlot(0);
+    }
+
+    // Draw with elements
+    if (m_eboid)
+    { 
+        if (m_primitiveType == PrimitiveType::Triangles)
+        {
+            glDrawElements(GL_TRIANGLES,
+                           count * 3,
+                           GL_UNSIGNED_INT,
+                           reinterpret_cast<void*>((uint64_t)offset * 3));
+        }
+        else // PrimitiveType::Lines
+        {
+            glDrawElements(GL_LINES,
+                           count * 2,
+                           GL_UNSIGNED_INT,
+                           reinterpret_cast<void*>((uint64_t)offset * 2));
+        }
+    }
+
+    // Regular draw
+    else
+    {
+        if (m_primitiveType == PrimitiveType::Triangles)
+        {
+            glDrawArrays(GL_TRIANGLES, offset * 3, count * 3);
+        }
+        else // PrimitiveType::Lines
+        {
+            glDrawArrays(GL_LINES, offset * 2, count * 2);
+        }
+    }
+}
 } // namespace coffee

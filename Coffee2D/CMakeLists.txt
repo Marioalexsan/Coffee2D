@@ -7,11 +7,11 @@ FetchContent_Declare(SFML
 	GIT_TAG master)
 FetchContent_MakeAvailable(SFML)
 
-# Fetch GLM dependency
-FetchContent_Declare(GLM
-	GIT_REPOSITORY https://github.com/g-truc/glm
-	GIT_TAG master)
-FetchContent_MakeAvailable(GLM)
+# # Fetch GLM dependency
+# FetchContent_Declare(GLM
+# 	GIT_REPOSITORY https://github.com/g-truc/glm
+# 	GIT_TAG master)
+# FetchContent_MakeAvailable(GLM)
 
 # Project Include Files
 
@@ -20,9 +20,9 @@ set(COFFEE2D_INCLUDE
 	# Graphics
 	"${INCROOT}/Graphics/Renderer.hpp"
 	"${INCROOT}/Graphics/Texture.hpp"
-	"${INCROOT}/Graphics/Vertex.hpp"
 	"${INCROOT}/Graphics/Model2D.hpp"
 	"${INCROOT}/Graphics/Shader.hpp"
+	"${INCROOT}/Graphics/SpriteBatch.hpp"
 
 	# Game
 	"${INCROOT}/Game/Game.hpp"
@@ -42,9 +42,9 @@ set(COFFEE2D_SRC
 	# Graphics
 	"${SRCROOT}/Graphics/Renderer.cpp"
 	"${SRCROOT}/Graphics/Texture.cpp"
-	"${SRCROOT}/Graphics/Vertex.cpp"
 	"${SRCROOT}/Graphics/Model2D.cpp"
 	"${SRCROOT}/Graphics/Shader.cpp"
+	"${SRCROOT}/Graphics/SpriteBatch.cpp"
 
 	# Graphics - OpenGL Implementation
 	"${SRCROOT}/Graphics/OpenGL/RendererOpenGL.cpp"
@@ -76,4 +76,4 @@ target_include_directories(Coffee2D PRIVATE "external/include")
 target_include_directories(Coffee2D PUBLIC "include")
 target_compile_features(Coffee2D PUBLIC cxx_std_20)
 target_link_libraries(Coffee2D PUBLIC ${COFFEE2D_LIBS})
-target_link_libraries(Coffee2D PUBLIC glm::glm)
+# target_link_libraries(Coffee2D PUBLIC glm::glm)

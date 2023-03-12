@@ -1,7 +1,6 @@
 #include "ShaderOpenGL.hpp"
 
 #include <glad/glad.h>
-#include <glm/gtc/type_ptr.hpp>
 
 #include <unordered_map>
 
@@ -135,10 +134,10 @@ void ShaderOpenGL::bind() const
         glUseProgram(m_program);
 }
 
-void ShaderOpenGL::useMvpMatrix(const glm::mat4& matrix) const
+void ShaderOpenGL::useMvpMatrix(const sf::Transform& transform) const
 {
     GLuint matrixID = glGetUniformLocation(m_program, "mvpMatrix");
-    glUniformMatrix4fv(matrixID, 1, GL_FALSE, glm::value_ptr(matrix));
+    glUniformMatrix4fv(matrixID, 1, GL_FALSE, transform.getMatrix());
 }
 
 void ShaderOpenGL::useTextureSlot(int textureSlot) const

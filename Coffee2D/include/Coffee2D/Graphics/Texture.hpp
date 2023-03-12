@@ -19,10 +19,10 @@ public:
 
     virtual ~Texture();
 
-    [[nodiscard]] virtual bool load(const std::span<char>& data,
-                                    uint64_t               width,
-                                    uint64_t               height,
-                                    PixelFormat            format) = 0;
+    [[nodiscard]] virtual bool load(const std::span<uint8_t>& data,
+                                    uint64_t                  width,
+                                    uint64_t                  height,
+                                    PixelFormat               format) = 0;
 
     virtual void unload() = 0;
 
@@ -30,6 +30,6 @@ public:
 
     virtual sf::Vector2u getSize() const = 0;
 
-    void loadFromFile(const std::filesystem::path& path);
+    [[nodiscard]] bool loadFromFile(const std::filesystem::path& path);
 };
 } // namespace coffee

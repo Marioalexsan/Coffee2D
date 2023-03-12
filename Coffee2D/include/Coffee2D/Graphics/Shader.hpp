@@ -2,7 +2,7 @@
 
 #include <Coffee2D/Export.hpp>
 #include <string>
-#include <glm/glm.hpp>
+#include <SFML/Graphics/Transform.hpp>
 
 namespace coffee
 {
@@ -27,7 +27,7 @@ public:
     virtual std::string getShaderLog(ShaderType type) const = 0;
     virtual std::string getProgramLog() const = 0;
 
-    virtual void useMvpMatrix(const glm::mat4& matrix) const = 0;
+    virtual void useMvpMatrix(const sf::Transform& transform) const = 0;
     virtual void useTextureSlot(int textureSlot) const = 0;
 
     virtual void bind() const = 0;

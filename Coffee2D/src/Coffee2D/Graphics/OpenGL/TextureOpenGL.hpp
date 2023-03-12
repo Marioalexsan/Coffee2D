@@ -1,7 +1,7 @@
 #pragma once
-#include <glad/glad.h>
-
 #include <Coffee2D/Graphics/Texture.hpp>
+
+#include <glad/glad.h>
 
 namespace coffee
 {
@@ -15,10 +15,10 @@ private:
 public:
     ~TextureOpenGL();
 
-    [[nodiscard]] bool load(const std::span<char>& data,
-                            uint64_t               width,
-                            uint64_t               height,
-                            PixelFormat            format) override;
+    [[nodiscard]] bool load(const std::span<uint8_t>& data,
+                            uint64_t                  width,
+                            uint64_t                  height,
+                            PixelFormat               format) override;
 
     sf::Vector2u getSize() const override;
 
