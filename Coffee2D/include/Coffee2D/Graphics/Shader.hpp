@@ -1,10 +1,12 @@
 #pragma once
 
+#include <Coffee2D/Export.hpp>
 #include <string>
+#include <glm/glm.hpp>
 
 namespace coffee
 {
-class Shader
+class COFFEE2D_API Shader
 {
 public:
     enum class ShaderType
@@ -14,13 +16,20 @@ public:
         Fragment = 1
     };
 
-    virtual ~Shader() = default;
+    virtual ~Shader();
 
-    [[nodicard]] virtual bool load(ShaderType type, const std::string& source) = 0;
+    [[nodiscard]] virtual bool load(ShaderType type, const std::string& source) = 0;
 
-    [[nodicard]] virtual bool unload() = 0;
+    virtual void destroy();
 
-    virtual const std::string& getShaderLog(ShaderType type) const;
-    virtual const std::string& getProgramLog() const;
+    [[nodiscard]] virtual bool compile() = 0;
+
+    virtual std::string getShaderLog(ShaderType type) const = 0;
+    virtual std::string getProgramLog() const = 0;
+
+    virtual void useMvpMatrix(const glm::mat4& matrix) const = 0;
+    virtual void useTextureSlot(int textureSlot) const = 0;
+
+    virtual void bind() const = 0;
 };
 }; // namespace coffee

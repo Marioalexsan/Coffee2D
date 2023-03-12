@@ -27,6 +27,6 @@ public:
 
     void unload() override;
 
-    void render(const glm::mat4& modelMatrix, const Texture* texture) override;
+    void render(const glm::mat4& modelMatrix, const Texture* texture, const Shader* shader) override;
 };
 } // namespace coffee

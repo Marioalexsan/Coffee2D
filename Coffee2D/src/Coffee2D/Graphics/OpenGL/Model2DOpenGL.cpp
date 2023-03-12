@@ -36,7 +36,8 @@ namespace coffee
 			glCreateBuffers(1, &m_vboid);
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * data.size(), data.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * data.size(), data.data(), GL_STATIC_DRAW);
+        m_dataSize = vertices;
 
 		// Use element draw
 		if (indices.size() != 0)
@@ -47,12 +48,17 @@ namespace coffee
 			}
 
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_eboid);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size(), indices.data(), GL_STATIC_DRAW);
+            m_indicesSize = indices.size();
 		}
 
 		// Clear the element buffer if present
-		else if (m_eboid)
-			glDeleteBuffers(1, &m_eboid);
+        else if (m_eboid)
+        {
+            glDeleteBuffers(1, &m_eboid);
+            m_eboid       = 0;
+            m_indicesSize = 0;
+		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_vboid);
 
@@ -64,20 +70,20 @@ namespace coffee
 		glEnableVertexAttribArray(2);
 
 		glVertexAttribPointer(0,
-			sizeof(Vertex::position) / sizeof(float),
+			sizeof(Vertex::position) / sizeof(Vertex::position.x),
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
 			(void*)0);
 		glVertexAttribPointer(1,
-			sizeof(Vertex::texCoords) / sizeof(float),
+			sizeof(Vertex::texCoords) / sizeof(Vertex::texCoords.x),
 			GL_FLOAT,
 			GL_FALSE,
 			sizeof(Vertex),
 			(void*)(sizeof(Vertex::position)));
 		glVertexAttribPointer(2,
-			sizeof(Vertex::color) / sizeof(float),
-			GL_FLOAT,
+			sizeof(Vertex::color) / sizeof(Vertex::color.r),
+			GL_UNSIGNED_BYTE,
 			GL_FALSE,
 			sizeof(Vertex),
 			(void*)(sizeof(Vertex::position) + sizeof(Vertex::texCoords)));
@@ -108,7 +114,7 @@ namespace coffee
 		}
 	}
 
-	void Model2DOpenGL::render(const glm::mat4& modelMatrix, const Texture* texture)
+	void Model2DOpenGL::render(const glm::mat4& modelMatrix, const Texture* texture, const Shader* shader)
 	{
 		(void)modelMatrix;
 
@@ -127,17 +133,13 @@ namespace coffee
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
-		/*if (state.shader)
+		if (shader)
 		{
-			state.shader->bind();
+			shader->bind();
 
-			GLuint matrixID =
-				glGetUniformLocation(state.shader->programId(), "mvpMatrix");
-			glUniformMatrix4fv(matrixID, 1, GL_FALSE, glm::value_ptr(mvpMatrix));
-
-			GLuint texID = glGetUniformLocation(state.shader->programId(), "tex");
-			glUniform1i(texID, 0);
-		}*/
+			shader->useMvpMatrix(modelMatrix);
+            shader->useTextureSlot(0);
+		}
 
 		// Draw with elements
 		if (m_eboid)
@@ -163,17 +165,15 @@ namespace coffee
 		{
 			if (m_primitiveType == PrimitiveType::Triangles)
 			{
-				glDrawElements(GL_TRIANGLES,
-					static_cast<GLsizei>(m_dataSize) / 3,
-					GL_UNSIGNED_INT,
-					(void*)0);
+                glDrawArrays(GL_TRIANGLES,
+					0,
+					static_cast<GLsizei>(m_dataSize));
 			}
 			else // PrimitiveType::Lines
 			{
-				glDrawElements(GL_LINES,
-					static_cast<GLsizei>(m_dataSize) / 2,
-					GL_UNSIGNED_INT,
-					(void*)0);
+                glDrawArrays(GL_LINES,
+					0,
+					static_cast<GLsizei>(m_dataSize));
 			}
 		}
 	}

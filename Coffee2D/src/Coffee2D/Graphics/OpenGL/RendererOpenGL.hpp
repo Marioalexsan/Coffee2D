@@ -14,7 +14,6 @@ public:
 
     std::unique_ptr<Texture> createTexture() override;
     std::unique_ptr<Model2D> createModel2D() override;
-
-    void setView() override;
+    std::unique_ptr<Shader>  createShader() override;
 };
 } // namespace coffee

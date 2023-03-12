@@ -7,6 +7,7 @@ namespace silver
 class SilverGame : public coffee::Game
 {
     std::unique_ptr<coffee::Model2D> m_model;
+    std::unique_ptr<coffee::Shader> m_shader;
 
 public:
     void initialize() override;

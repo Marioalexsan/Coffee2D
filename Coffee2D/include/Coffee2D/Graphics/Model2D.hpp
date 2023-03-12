@@ -1,7 +1,9 @@
 #pragma once
 #include <Coffee2D/Export.hpp>
+#include <Coffee2D/Graphics/Shader.hpp>
 #include <Coffee2D/Graphics/Texture.hpp>
 #include <Coffee2D/Graphics/Vertex.hpp>
+
 #include <span>
 
 namespace coffee
@@ -21,7 +23,9 @@ public:
 
     virtual void unload() = 0;
 
-    virtual void render(const glm::mat4& mvpMatrix, const Texture* texture) = 0;
+    virtual void render(const glm::mat4& mvpMatrix,
+                        const Texture*   texture,
+                        const Shader*    shader) = 0;
 
     Model2D()          = default;
     virtual ~Model2D() = default;
