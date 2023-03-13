@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 
     silver::SilverGame game;
 
-    game.setFPS(4);
+    game.setFPS(60);
     game.run();
 
     return 0;

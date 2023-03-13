@@ -50,5 +50,6 @@ public:
 
 private:
     void threadLoop();
+    void processEvents();
 };
 } // namespace coffee

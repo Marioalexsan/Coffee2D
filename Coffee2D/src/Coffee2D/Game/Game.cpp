@@ -15,7 +15,7 @@ Game::Game()
                                             sf::Style::Titlebar | sf::Style::Close,
                                             sf::ContextSettings(24, 8, 0, 4, 6));
 
-    m_renderer = std::make_unique<RendererOpenGL>();
+    m_renderer    = std::make_unique<RendererOpenGL>();
     m_spriteBatch = std::make_unique<SpriteBatch>(*m_renderer);
 }
 
@@ -88,11 +88,7 @@ void Game::threadLoop()
 
     while (m_running)
     {
-        sf::Event event;
-        while (m_window->pollEvent(event))
-        {
-            // Nothing for now
-        }
+        processEvents();
 
         // Calculate target time to sleep
         sf::Time frameTime = sf::seconds(1) / (float)m_fps;
@@ -127,6 +123,16 @@ void Game::threadLoop()
 SpriteBatch& Game::getSpriteBatch()
 {
     return *m_spriteBatch;
+}
+
+void Game::processEvents()
+{
+    sf::Event event;
+    while (m_window->pollEvent(event))
+    {
+        if (event.type == sf::Event::Closed)
+            m_running = false;
+    }
 }
 
 } // namespace coffee

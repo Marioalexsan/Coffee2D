@@ -9,6 +9,8 @@ class SilverGame : public coffee::Game
     std::unique_ptr<coffee::Shader>  m_shader;
     std::unique_ptr<coffee::Texture> m_texture;
 
+    sf::Angle m_angle;
+
 public:
     void initialize() override;
 

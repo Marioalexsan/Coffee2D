@@ -93,21 +93,21 @@ void SilverGame::update(sf::Time deltaTime)
 {
     getRenderer().clear(sf::Color::Black);
 
-    std::clog << "Ligma balls " << deltaTime.asMicroseconds() / 1000.f << std::endl;
+    m_angle += sf::degrees(90) * deltaTime.asSeconds();
 
     getSpriteBatch().drawSprite(*m_texture,
                                 sf::Vector2f(0, 0),
-                                sf::radians(0),
+                                m_angle,
                                 sf::Vector2f(1, 1),
                                 sf::Vector2f(50, 50),
                                 sf::Color::Green,
                                 m_shader.get());
 
     getSpriteBatch().drawSprite(*m_texture,
-                                sf::Vector2f(200, 300),
-                                sf::radians(0),
-                                sf::Vector2f(1, 1),
-                                sf::Vector2f(0, 0),
+                                sf::Vector2f(100, 100),
+                                -m_angle,
+                                sf::Vector2f(2, 1),
+                                sf::Vector2f(50, 50),
                                 sf::Color::Green,
                                 m_shader.get());
 

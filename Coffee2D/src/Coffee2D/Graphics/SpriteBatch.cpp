@@ -26,7 +26,7 @@ SpriteBatch::SpriteBatch(Renderer& renderer)
     std::vector<std::uint32_t> indices(PreferredBatchSize * 6);
     std::size_t                vertex = 0;
 
-    for (std::size_t sprite = 0; sprite < PreferredBatchSize; sprite++)
+    for (std::size_t sprite = 0; sprite < PreferredBatchSize; vertex += 4)
     {
         // Assign consecutively
         indices[sprite++] = vertex + 0;
@@ -63,8 +63,9 @@ void SpriteBatch::drawSprite(const Texture& texture,
     sf::Transform transform = m_view.getTransform();
 
     transform.translate(position);
-    transform.rotate(rotation, center);
-    transform.scale(scale, center);
+    transform.rotate(rotation);
+    transform.scale(scale);
+    transform.translate(-center);
 
     sf::Vector2f texSize = (sf::Vector2f)texture.getSize();
 
@@ -97,7 +98,7 @@ void SpriteBatch::flush()
                     m_batchTexture,
                     m_batchShader,
                     0,
-                    m_vertices.size() / 4 * 3);
+                    m_vertices.size() / 2); // 2 trianges per 4 vertices
 
     m_vertices.clear();
 }

@@ -26,3 +26,10 @@ if (WIN32 AND BUILD_SHARED_LIBS)
     add_custom_command(TARGET ProjectSilver POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:ProjectSilver> $<TARGET_FILE_DIR:ProjectSilver> COMMAND_EXPAND_LISTS)
 endif()
+
+# Removes the console window
+if (WIN32)
+    target_link_options(ProjectSilver PRIVATE /SUBSYSTEM:WINDOWS)
+else()
+    target_link_options(ProjectSilver PRIVATE -mwindows)
+endif()
